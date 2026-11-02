@@ -6,6 +6,7 @@ export interface ChargerConfig {
   host: string;
   pollInterval?: number;
   timeout?: number;
+  showOutlet?: boolean;
   showVehicleConnectedSensor?: boolean;
   showChargingSensor?: boolean;
   showHandleTemperature?: boolean;

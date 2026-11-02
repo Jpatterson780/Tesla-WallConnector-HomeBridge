@@ -44,6 +44,12 @@
               "minimum": 1,
               "maximum": 60
             },
+            "showOutlet": {
+              "title": "Also show as an outlet (adds power and energy readings in the Eve app)",
+              "description": "The outlet's On/Off shows whether it's charging, but it can't be switched: the charger's local API is read-only.",
+              "type": "boolean",
+              "default": false
+            },
             "showVehicleConnectedSensor": {
               "title": "Expose \"Vehicle Connected\" contact sensor",
               "type": "boolean",
@@ -91,6 +97,7 @@
           "items": [
             "chargers[].pollInterval",
             "chargers[].timeout",
+            "chargers[].showOutlet",
             "chargers[].showVehicleConnectedSensor",
             "chargers[].showChargingSensor",
             "chargers[].showHandleTemperature",

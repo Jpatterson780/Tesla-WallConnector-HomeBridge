@@ -59,7 +59,8 @@ export class TeslaWallConnectorPlatform implements DynamicPlatformPlugin {
         this.api.updatePlatformAccessories([accessory]);
       } else {
         this.log.info('Adding Wall Connector:', name);
-        accessory = new this.api.platformAccessory(name, uuid, this.api.hap.Categories.OUTLET);
+        const category = charger.showOutlet ? this.api.hap.Categories.OUTLET : this.api.hap.Categories.SENSOR;
+        accessory = new this.api.platformAccessory(name, uuid, category);
         accessory.context.charger = charger;
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
       }

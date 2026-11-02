@@ -20,10 +20,10 @@ interface TempSensorDef {
 
 /**
  * One HomeKit accessory per Wall Connector:
- *  - Outlet (primary): On = charging (contactor closed), Outlet In Use = vehicle plugged in,
- *    plus Eve power metering (V / A / W / lifetime kWh).
- *  - Optional Contact Sensor "Vehicle Connected" (contact detected = plugged in).
- *  - Optional Occupancy Sensor "Charging" (occupied = charging).
+ *  - Occupancy Sensor "Charging" (occupied = charging), primary by default.
+ *  - Contact Sensor "Vehicle Connected" (contact detected = plugged in).
+ *  - Optional Outlet: On = charging (contactor closed), Outlet In Use = vehicle plugged in,
+ *    plus Eve power metering (V / A / W / lifetime kWh). Primary when enabled.
  *  - Optional Temperature Sensors for handle / PCBA / MCU.
  *
  * The local API is read-only, so attempts to toggle the outlet are reverted.
@@ -32,7 +32,7 @@ export class WallConnectorAccessory {
   private readonly client: WallConnectorClient;
   private readonly pollIntervalMs: number;
 
-  private readonly outlet: Service;
+  private readonly outlet?: Service;
   private readonly vehicleSensor?: Service;
   private readonly chargingSensor?: Service;
   private readonly tempSensors: { def: TempSensorDef; service: Service }[] = [];
@@ -61,23 +61,27 @@ export class WallConnectorAccessory {
       .setCharacteristic(Characteristic.Model, 'Wall Connector')
       .setCharacteristic(Characteristic.SerialNumber, config.host);
 
-    // Outlet
-    this.outlet = this.ensureService(Service.Outlet, config.name, 'outlet');
-    this.outlet.setPrimaryService(true);
-    this.outlet.getCharacteristic(Characteristic.On)
-      .onGet(() => this.read(v => !!v.contactor_closed))
-      .onSet(value => this.rejectSet(value));
-    this.outlet.getCharacteristic(Characteristic.OutletInUse)
-      .onGet(() => this.read(v => !!v.vehicle_connected));
+    // Outlet (the only place Eve power metering can live)
+    if (config.showOutlet ?? false) {
+      const outlet = this.ensureService(Service.Outlet, config.name, 'outlet');
+      outlet.getCharacteristic(Characteristic.On)
+        .onGet(() => this.read(v => !!v.contactor_closed))
+        .onSet(value => this.rejectSet(value));
+      outlet.getCharacteristic(Characteristic.OutletInUse)
+        .onGet(() => this.read(v => !!v.vehicle_connected));
 
-    const eve = platform.Eve;
-    for (const c of [eve.Voltage, eve.ElectricCurrent, eve.CurrentConsumption, eve.TotalConsumption]) {
-      this.outlet.addOptionalCharacteristic(c);
+      const eve = platform.Eve;
+      for (const c of [eve.Voltage, eve.ElectricCurrent, eve.CurrentConsumption, eve.TotalConsumption]) {
+        outlet.addOptionalCharacteristic(c);
+      }
+      outlet.getCharacteristic(eve.Voltage).onGet(() => this.read(v => round(v.grid_v ?? 0, 1)));
+      outlet.getCharacteristic(eve.ElectricCurrent).onGet(() => this.read(v => round(chargingCurrentA(v), 1)));
+      outlet.getCharacteristic(eve.CurrentConsumption).onGet(() => this.read(v => Math.round(computePowerW(v))));
+      outlet.getCharacteristic(eve.TotalConsumption).onGet(() => this.read(() => this.totalKWh()));
+      this.outlet = outlet;
+    } else {
+      this.removeService(Service.Outlet, 'outlet');
     }
-    this.outlet.getCharacteristic(eve.Voltage).onGet(() => this.read(v => round(v.grid_v ?? 0, 1)));
-    this.outlet.getCharacteristic(eve.ElectricCurrent).onGet(() => this.read(v => round(chargingCurrentA(v), 1)));
-    this.outlet.getCharacteristic(eve.CurrentConsumption).onGet(() => this.read(v => Math.round(computePowerW(v))));
-    this.outlet.getCharacteristic(eve.TotalConsumption).onGet(() => this.read(() => this.totalKWh()));
 
     // Vehicle connected
     if (config.showVehicleConnectedSensor ?? true) {
@@ -116,6 +120,15 @@ export class WallConnectorAccessory {
         .onGet(() => this.read(v => round(v[def.key] ?? 0, 1)));
       service.getCharacteristic(Characteristic.StatusFault);
       this.tempSensors.push({ def, service });
+    }
+
+    // The primary service decides which tile/icon the Home app shows for the accessory.
+    const primary = this.outlet ?? this.chargingSensor ?? this.vehicleSensor ?? this.tempSensors[0]?.service;
+    for (const service of [this.outlet, this.chargingSensor, this.vehicleSensor, ...this.tempSensors.map(t => t.service)]) {
+      service?.setPrimaryService(service === primary);
+    }
+    if (!primary) {
+      platform.log.warn(`[${config.name}] Every service is turned off in the config, so nothing will show in HomeKit.`);
     }
 
     void this.poll();
@@ -209,7 +222,7 @@ export class WallConnectorAccessory {
       : Characteristic.StatusFault.NO_FAULT;
 
     this.outlet
-      .updateCharacteristic(Characteristic.On, !!v.contactor_closed)
+      ?.updateCharacteristic(Characteristic.On, !!v.contactor_closed)
       .updateCharacteristic(Characteristic.OutletInUse, !!v.vehicle_connected)
       .updateCharacteristic(eve.Voltage, round(v.grid_v ?? 0, 1))
       .updateCharacteristic(eve.ElectricCurrent, round(chargingCurrentA(v), 1))
@@ -261,7 +274,7 @@ export class WallConnectorAccessory {
     const charging = !!this.vitals?.contactor_closed;
     if (value !== charging) {
       this.platform.log.info(`[${this.config.name}] The Wall Connector local API is read-only; charging cannot be switched from HomeKit.`);
-      setTimeout(() => this.outlet.updateCharacteristic(this.platform.Characteristic.On, charging), 250);
+      setTimeout(() => this.outlet?.updateCharacteristic(this.platform.Characteristic.On, charging), 250);
     }
   }
 
