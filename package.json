@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-tesla-wall-connector",
+  "name": "homebridge-tesla-wall-connector-local",
   "displayName": "Tesla Wall Connector",
   "version": "1.0.0",
   "description": "Monitor a Tesla Wall Connector (Gen 3) in HomeKit using its local vitals API.",
@@ -28,7 +28,7 @@
   ],
   "engines": {
     "node": "^18.20.4 || ^20.18.0 || ^22.10.0 || ^24.0.0",
-    "homebridge": "^1.8.0 || ^2.0.0-beta.0"
+    "homebridge": "^1.8.0 || ^2.0.0"
   },
   "scripts": {
     "build": "rimraf ./dist && tsc",

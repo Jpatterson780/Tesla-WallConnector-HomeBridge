@@ -1,4 +1,4 @@
-# homebridge-tesla-wall-connector
+# homebridge-tesla-wall-connector-local
 
 Homebridge plugin that monitors a **Tesla Wall Connector (Gen 3)** in HomeKit using the charger's local, unauthenticated status API (`http://<charger-ip>/api/1/vitals`). No Tesla account or cloud access is needed.
 
@@ -36,14 +36,10 @@ Power is reported as 0 W whenever the contactor is open, which filters out idle 
 
 ## Installation
 
-Install it from the Homebridge UI by searching for *Tesla Wall Connector*. If it isn't published yet, install it from this folder:
+Search for **homebridge-tesla-wall-connector-local** on the Plugins tab of the Homebridge UI and install it. Or install it from the command line:
 
 ```bash
-npm install && npm run build
-```
-
-```bash
-sudo npm install -g /path/to/Tesla-WallConnector-HomeBridge
+sudo npm install -g homebridge-tesla-wall-connector-local
 ```
 
 Give the charger a DHCP reservation or static IP so its address doesn't change. You can confirm the API works with `curl http://<charger-ip>/api/1/vitals`.
@@ -56,7 +52,7 @@ Use the Homebridge UI settings screen, or add this to `config.json`:
 {
   "platforms": [
     {
-      "platform": "TeslaWallConnector",
+      "platform": "TeslaWallConnectorLocal",
       "name": "Tesla Wall Connector",
       "chargers": [
         {

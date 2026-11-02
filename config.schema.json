@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "TeslaWallConnector",
+  "pluginAlias": "TeslaWallConnectorLocal",
   "pluginType": "platform",
   "singular": true,
   "headerDisplay": "Monitors one or more Tesla Wall Connectors (Gen 3) over your local network using the charger's `/api/1/vitals` endpoint. Give each charger a static IP / DHCP reservation.",

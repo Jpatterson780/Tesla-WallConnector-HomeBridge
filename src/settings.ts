@@ -1,5 +1,5 @@
-export const PLATFORM_NAME = 'TeslaWallConnector';
-export const PLUGIN_NAME = 'homebridge-tesla-wall-connector';
+export const PLATFORM_NAME = 'TeslaWallConnectorLocal';
+export const PLUGIN_NAME = 'homebridge-tesla-wall-connector-local';
 
 export interface ChargerConfig {
   name: string;
