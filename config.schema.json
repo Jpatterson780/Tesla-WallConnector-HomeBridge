@@ -90,28 +90,33 @@
       "orderable": false,
       "buttonText": "Add Wall Connector",
       "items": [
-        "chargers[].name",
-        "chargers[].host",
         {
-          "type": "fieldset",
-          "title": "HomeKit tiles",
-          "description": "Choose what this charger shows in HomeKit. Restart Homebridge after changing these.",
+          "type": "section",
           "items": [
-            "chargers[].showChargingSensor",
-            "chargers[].showVehicleConnectedSensor",
-            "chargers[].showOutlet",
-            "chargers[].showHandleTemperature",
-            "chargers[].showPcbaTemperature",
-            "chargers[].showMcuTemperature"
-          ]
-        },
-        {
-          "type": "fieldset",
-          "title": "Advanced",
-          "expandable": true,
-          "items": [
-            "chargers[].pollInterval",
-            "chargers[].timeout"
+            "chargers[].name",
+            "chargers[].host",
+            {
+              "type": "fieldset",
+              "title": "HomeKit tiles",
+              "description": "Choose what this charger shows in HomeKit. Restart Homebridge after changing these.",
+              "items": [
+                "chargers[].showChargingSensor",
+                "chargers[].showVehicleConnectedSensor",
+                "chargers[].showOutlet",
+                "chargers[].showHandleTemperature",
+                "chargers[].showPcbaTemperature",
+                "chargers[].showMcuTemperature"
+              ]
+            },
+            {
+              "type": "fieldset",
+              "title": "Advanced",
+              "expandable": true,
+              "items": [
+                "chargers[].pollInterval",
+                "chargers[].timeout"
+              ]
+            }
           ]
         }
       ]
