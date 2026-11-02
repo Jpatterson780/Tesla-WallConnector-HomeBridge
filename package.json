@@ -7,12 +7,12 @@
   "author": "Josh Patterson",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jpatterson780/Telsa-WallConnector-HomeBridge.git"
+    "url": "git+https://github.com/Jpatterson780/Tesla-WallConnector-HomeBridge.git"
   },
   "bugs": {
-    "url": "https://github.com/Jpatterson780/Telsa-WallConnector-HomeBridge/issues"
+    "url": "https://github.com/Jpatterson780/Tesla-WallConnector-HomeBridge/issues"
   },
-  "homepage": "https://github.com/Jpatterson780/Telsa-WallConnector-HomeBridge#readme",
+  "homepage": "https://github.com/Jpatterson780/Tesla-WallConnector-HomeBridge#readme",
   "main": "dist/index.js",
   "files": [
     "dist",
