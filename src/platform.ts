@@ -39,16 +39,23 @@ export class TeslaWallConnectorPlatform implements DynamicPlatformPlugin {
     const chargers = (Array.isArray(this.config.chargers) ? this.config.chargers : []) as ChargerConfig[];
     const activeUuids = new Set<string>();
 
-    for (const charger of chargers) {
-      if (!charger?.host) {
-        this.log.warn('Skipping Wall Connector with no host configured:', charger?.name ?? '(unnamed)');
-        continue;
+    chargers.forEach((charger, index) => {
+      if (!charger?.host?.trim()) {
+        // Easy to hit: each "Add Wall Connector" click adds a card with its own toggles.
+        this.log.warn(
+          `Wall Connector #${index + 1} of ${chargers.length} ("${charger?.name ?? 'unnamed'}") has no IP address, so it was skipped `
+          + 'and its settings have no effect. Add its IP address, or delete that entry in the plugin settings.',
+        );
+        return;
       }
       const name = charger.name || 'Wall Connector';
       const uuid = this.api.hap.uuid.generate(`${PLUGIN_NAME}:${charger.host.trim().toLowerCase()}`);
       if (activeUuids.has(uuid)) {
-        this.log.warn(`Duplicate Wall Connector host "${charger.host}" ignored.`);
-        continue;
+        this.log.warn(
+          `Wall Connector #${index + 1} of ${chargers.length} ("${name}") uses the same IP address as an earlier entry (${charger.host}), `
+          + 'so it was skipped and its settings have no effect.',
+        );
+        return;
       }
       activeUuids.add(uuid);
 
@@ -66,6 +73,10 @@ export class TeslaWallConnectorPlatform implements DynamicPlatformPlugin {
       }
 
       this.handlers.push(new WallConnectorAccessory(this, accessory, charger));
+    });
+
+    if (this.handlers.length === 0) {
+      this.log.warn('No Wall Connectors with an IP address are configured, so nothing will show in HomeKit.');
     }
 
     const stale = [...this.cachedAccessories.values()].filter(a => !activeUuids.has(a.UUID));

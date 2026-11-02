@@ -28,6 +28,7 @@
               "title": "IP Address / Hostname",
               "type": "string",
               "placeholder": "192.168.1.50",
+              "description": "Required. A charger entry without an IP address is ignored, along with all of its settings.",
               "required": true
             },
             "showChargingSensor": {
