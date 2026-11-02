@@ -30,6 +30,38 @@
               "placeholder": "192.168.1.50",
               "required": true
             },
+            "showChargingSensor": {
+              "title": "Charging (occupancy sensor: occupied while charging)",
+              "type": "boolean",
+              "default": true
+            },
+            "showVehicleConnectedSensor": {
+              "title": "Vehicle Connected (contact sensor: closed while plugged in)",
+              "type": "boolean",
+              "default": true
+            },
+            "showOutlet": {
+              "title": "Outlet (adds power and energy readings in the Eve app)",
+              "description": "On/Off shows whether it's charging, but it can't be switched: the charger's local API is read-only.",
+              "type": "boolean",
+              "default": false
+            },
+            "showHandleTemperature": {
+              "title": "Handle Temperature",
+              "description": "Temperature sensors are included in the Home app's climate summary for the room.",
+              "type": "boolean",
+              "default": false
+            },
+            "showPcbaTemperature": {
+              "title": "PCBA (internal board) Temperature",
+              "type": "boolean",
+              "default": false
+            },
+            "showMcuTemperature": {
+              "title": "MCU Temperature",
+              "type": "boolean",
+              "default": false
+            },
             "pollInterval": {
               "title": "Poll Interval (seconds)",
               "type": "integer",
@@ -43,37 +75,6 @@
               "default": 5,
               "minimum": 1,
               "maximum": 60
-            },
-            "showOutlet": {
-              "title": "Also show as an outlet (adds power and energy readings in the Eve app)",
-              "description": "The outlet's On/Off shows whether it's charging, but it can't be switched: the charger's local API is read-only.",
-              "type": "boolean",
-              "default": false
-            },
-            "showVehicleConnectedSensor": {
-              "title": "Expose \"Vehicle Connected\" contact sensor",
-              "type": "boolean",
-              "default": true
-            },
-            "showChargingSensor": {
-              "title": "Expose \"Charging\" occupancy sensor",
-              "type": "boolean",
-              "default": true
-            },
-            "showHandleTemperature": {
-              "title": "Expose handle temperature sensor",
-              "type": "boolean",
-              "default": true
-            },
-            "showPcbaTemperature": {
-              "title": "Expose PCBA (internal board) temperature sensor",
-              "type": "boolean",
-              "default": false
-            },
-            "showMcuTemperature": {
-              "title": "Expose MCU temperature sensor",
-              "type": "boolean",
-              "default": false
             }
           }
         }
@@ -92,17 +93,24 @@
         "chargers[].host",
         {
           "type": "fieldset",
+          "title": "HomeKit tiles",
+          "description": "Choose what this charger shows in HomeKit. Restart Homebridge after changing these.",
+          "items": [
+            "chargers[].showChargingSensor",
+            "chargers[].showVehicleConnectedSensor",
+            "chargers[].showOutlet",
+            "chargers[].showHandleTemperature",
+            "chargers[].showPcbaTemperature",
+            "chargers[].showMcuTemperature"
+          ]
+        },
+        {
+          "type": "fieldset",
           "title": "Advanced",
           "expandable": true,
           "items": [
             "chargers[].pollInterval",
-            "chargers[].timeout",
-            "chargers[].showOutlet",
-            "chargers[].showVehicleConnectedSensor",
-            "chargers[].showChargingSensor",
-            "chargers[].showHandleTemperature",
-            "chargers[].showPcbaTemperature",
-            "chargers[].showMcuTemperature"
+            "chargers[].timeout"
           ]
         }
       ]

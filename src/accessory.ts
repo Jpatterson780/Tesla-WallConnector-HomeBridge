@@ -24,7 +24,8 @@ interface TempSensorDef {
  *  - Contact Sensor "Vehicle Connected" (contact detected = plugged in).
  *  - Optional Outlet: On = charging (contactor closed), Outlet In Use = vehicle plugged in,
  *    plus Eve power metering (V / A / W / lifetime kWh). Primary when enabled.
- *  - Optional Temperature Sensors for handle / PCBA / MCU.
+ *  - Optional Temperature Sensors for handle / PCBA / MCU (all off by default: HomeKit
+ *    counts every temperature sensor in the room's climate summary).
  *
  * The local API is read-only, so attempts to toggle the outlet are reverted.
  */
@@ -105,7 +106,7 @@ export class WallConnectorAccessory {
 
     // Temperatures
     const tempDefs: TempSensorDef[] = [
-      { subtype: 'handle-temp', label: 'Handle Temperature', key: 'handle_temp_c', enabled: config.showHandleTemperature ?? true },
+      { subtype: 'handle-temp', label: 'Handle Temperature', key: 'handle_temp_c', enabled: config.showHandleTemperature ?? false },
       { subtype: 'pcba-temp', label: 'PCBA Temperature', key: 'pcba_temp_c', enabled: config.showPcbaTemperature ?? false },
       { subtype: 'mcu-temp', label: 'MCU Temperature', key: 'mcu_temp_c', enabled: config.showMcuTemperature ?? false },
     ];
@@ -129,6 +130,14 @@ export class WallConnectorAccessory {
     }
     if (!primary) {
       platform.log.warn(`[${config.name}] Every service is turned off in the config, so nothing will show in HomeKit.`);
+    } else {
+      const shown = [
+        this.outlet && 'Outlet',
+        this.chargingSensor && 'Charging',
+        this.vehicleSensor && 'Vehicle Connected',
+        ...this.tempSensors.map(t => t.def.label),
+      ].filter(Boolean);
+      platform.log.info(`[${config.name}] Showing in HomeKit: ${shown.join(', ')}`);
     }
 
     void this.poll();
