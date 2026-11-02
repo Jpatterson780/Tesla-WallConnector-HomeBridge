@@ -1,7 +1,7 @@
 {
   "name": "homebridge-tesla-wall-connector-local",
   "displayName": "Tesla Wall Connector",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Monitor a Tesla Wall Connector (Gen 3) in HomeKit using its local vitals API.",
   "license": "MIT",
   "author": "Josh Patterson",
