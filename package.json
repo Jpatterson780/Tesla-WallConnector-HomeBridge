@@ -1,7 +1,7 @@
 {
   "name": "homebridge-tesla-wall-connector-local",
   "displayName": "Tesla Wall Connector",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "Monitor a Tesla Wall Connector (Gen 3) EV charger in HomeKit: charging, plugged-in and temperature sensors via its local API, no Tesla account needed.",
   "license": "MIT",
   "author": "Josh Patterson",
