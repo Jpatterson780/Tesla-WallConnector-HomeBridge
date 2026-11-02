@@ -1,0 +1,104 @@
+{
+  "pluginAlias": "TeslaWallConnector",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Monitors one or more Tesla Wall Connectors (Gen 3) over your local network using the charger's `/api/1/vitals` endpoint. Give each charger a static IP / DHCP reservation.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Platform Name",
+        "type": "string",
+        "default": "Tesla Wall Connector",
+        "required": true
+      },
+      "chargers": {
+        "title": "Wall Connectors",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "default": "Wall Connector",
+              "required": true
+            },
+            "host": {
+              "title": "IP Address / Hostname",
+              "type": "string",
+              "placeholder": "192.168.1.50",
+              "required": true
+            },
+            "pollInterval": {
+              "title": "Poll Interval (seconds)",
+              "type": "integer",
+              "default": 15,
+              "minimum": 5,
+              "maximum": 3600
+            },
+            "timeout": {
+              "title": "Request Timeout (seconds)",
+              "type": "integer",
+              "default": 5,
+              "minimum": 1,
+              "maximum": 60
+            },
+            "showVehicleConnectedSensor": {
+              "title": "Expose \"Vehicle Connected\" contact sensor",
+              "type": "boolean",
+              "default": true
+            },
+            "showChargingSensor": {
+              "title": "Expose \"Charging\" occupancy sensor",
+              "type": "boolean",
+              "default": true
+            },
+            "showHandleTemperature": {
+              "title": "Expose handle temperature sensor",
+              "type": "boolean",
+              "default": true
+            },
+            "showPcbaTemperature": {
+              "title": "Expose PCBA (internal board) temperature sensor",
+              "type": "boolean",
+              "default": false
+            },
+            "showMcuTemperature": {
+              "title": "Expose MCU temperature sensor",
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      }
+    }
+  },
+  "layout": [
+    "name",
+    {
+      "key": "chargers",
+      "type": "array",
+      "orderable": false,
+      "buttonText": "Add Wall Connector",
+      "items": [
+        "chargers[].name",
+        "chargers[].host",
+        {
+          "type": "fieldset",
+          "title": "Advanced",
+          "expandable": true,
+          "items": [
+            "chargers[].pollInterval",
+            "chargers[].timeout",
+            "chargers[].showVehicleConnectedSensor",
+            "chargers[].showChargingSensor",
+            "chargers[].showHandleTemperature",
+            "chargers[].showPcbaTemperature",
+            "chargers[].showMcuTemperature"
+          ]
+        }
+      ]
+    }
+  ]
+}

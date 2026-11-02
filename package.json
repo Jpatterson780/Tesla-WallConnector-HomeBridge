@@ -1,0 +1,44 @@
+{
+  "name": "homebridge-tesla-wall-connector",
+  "displayName": "Tesla Wall Connector",
+  "version": "1.0.0",
+  "description": "Monitor a Tesla Wall Connector (Gen 3) in HomeKit using its local vitals API.",
+  "license": "MIT",
+  "author": "Josh Patterson",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jpatterson780/Telsa-WallConnector-HomeBridge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Jpatterson780/Telsa-WallConnector-HomeBridge/issues"
+  },
+  "homepage": "https://github.com/Jpatterson780/Telsa-WallConnector-HomeBridge#readme",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "config.schema.json",
+    "README.md"
+  ],
+  "keywords": [
+    "homebridge-plugin",
+    "homebridge",
+    "tesla",
+    "wall connector",
+    "ev charger"
+  ],
+  "engines": {
+    "node": "^18.20.4 || ^20.18.0 || ^22.10.0 || ^24.0.0",
+    "homebridge": "^1.8.0 || ^2.0.0-beta.0"
+  },
+  "scripts": {
+    "build": "rimraf ./dist && tsc",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "homebridge": "^1.8.5",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
+  }
+}
