@@ -32,12 +32,12 @@
               "required": true
             },
             "showChargingSensor": {
-              "title": "Charging (occupancy sensor: occupied while charging)",
+              "title": "Charging (occupancy sensor: detected while charging)",
               "type": "boolean",
               "default": true
             },
             "showVehicleConnectedSensor": {
-              "title": "Vehicle Connected (contact sensor: closed while plugged in)",
+              "title": "Vehicle Connected (occupancy sensor: detected while plugged in)",
               "type": "boolean",
               "default": true
             },
@@ -98,7 +98,7 @@
             {
               "type": "fieldset",
               "title": "HomeKit tiles",
-              "description": "Choose what this charger shows in HomeKit. Restart Homebridge after changing these.",
+              "description": "Each one you turn on shows as its own accessory in HomeKit, named after this charger (for example \"Garage Charger Charging\"). Restart Homebridge after changing these.",
               "items": [
                 "chargers[].showChargingSensor",
                 "chargers[].showVehicleConnectedSensor",

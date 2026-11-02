@@ -6,17 +6,23 @@ The local API is read-only, so this plugin **monitors** the charger; it cannot s
 
 ## What shows up in HomeKit
 
-Each Wall Connector becomes one accessory made up of sensors:
+Each Wall Connector shows up as a set of separate HomeKit accessories, one per tile, named after the charger. Separate accessories mean the Home app shows each one as its own tile, rather than grouping them and picking one to represent the group.
 
-| Service | Meaning | Source field |
-|---|---|---|
-| **Occupancy Sensor** "Charging" (main tile) | Occupied = charging | `contactor_closed` |
-| **Contact Sensor** "Vehicle Connected" | Contact detected = plugged in | `vehicle_connected` |
-| Temperature Sensor "Handle Temperature" *(off by default)* | Charge handle temperature | `handle_temp_c` |
-| Temperature Sensor "PCBA Temperature" *(off by default)* | Internal board temperature | `pcba_temp_c` |
-| Temperature Sensor "MCU Temperature" *(off by default)* | Microcontroller temperature | `mcu_temp_c` |
-| Outlet *(off by default)* | **On** = actively charging; **In Use** = vehicle plugged in. Becomes the main tile when turned on | `contactor_closed`, `vehicle_connected` |
-| ↳ Eve power metering | Voltage (V), Current (A), Power (W), Total energy (kWh, lifetime) | `grid_v`, `vehicle_current_a`, computed, `/api/1/lifetime` `energy_wh` |
+| Accessory (charger named "Garage Charger") | Type | Meaning | Source field |
+|---|---|---|---|
+| **Garage Charger Charging** | Occupancy Sensor | Detected = charging | `contactor_closed` |
+| **Garage Charger Vehicle Connected** | Occupancy Sensor | Detected = vehicle plugged in | `vehicle_connected` |
+| Garage Charger *(off by default)* | Outlet | **On** = actively charging; **In Use** = vehicle plugged in | `contactor_closed`, `vehicle_connected` |
+| ↳ Eve power metering | | Voltage (V), Current (A), Power (W), Total energy (kWh, lifetime) | `grid_v`, `vehicle_current_a`, computed, `/api/1/lifetime` `energy_wh` |
+| Garage Charger Handle Temperature *(off by default)* | Temperature Sensor | Charge handle temperature | `handle_temp_c` |
+| Garage Charger PCBA Temperature *(off by default)* | Temperature Sensor | Internal board temperature | `pcba_temp_c` |
+| Garage Charger MCU Temperature *(off by default)* | Temperature Sensor | Microcontroller temperature | `mcu_temp_c` |
+
+Both sensors are occupancy sensors so they read naturally ("Detected" / "Not Detected") and stay out of the Home app's Security section. A contact sensor would read "Open" whenever the car is unplugged.
+
+### Upgrading from 1.x
+
+Version 1.x put everything in one combined accessory. On the first start after upgrading, that accessory is removed and the separate accessories are added in its place, so any Home app automations or scenes that used it need to be set up again with the new accessories.
 
 #### Power and energy readings need the outlet
 
@@ -25,10 +31,10 @@ HomeKit has no service type for power or energy, so the only place to put those 
 Notes:
 
 - Apple's Home app doesn't display the Eve power/energy values, even with the outlet turned on. Use the Eve, Controller for HomeKit, or Home+ app to see them and build automations on them.
-- The contact and occupancy sensors let you trigger Home app automations, for example "notify me when the car is plugged in" or "when charging stops".
+- The occupancy sensors let you trigger Home app automations, for example "notify me when the car is plugged in" or "when charging stops".
 - If you toggle the outlet in HomeKit, the plugin logs that the API is read-only and switches it back.
 - The temperature sensors are off by default because HomeKit includes every temperature sensor in the room's climate summary, so a charge handle's temperature would show up next to your thermostat.
-- If the charger reports any `current_alerts`, the sensors show **Status Fault** and the alerts are logged.
+- If the charger reports any `current_alerts`, the sensor accessories show **Status Fault** and the alerts are logged.
 - If the charger can't be reached, its tiles show **No Response** until it comes back.
 - Serial number, part number, and firmware are read from `/api/1/version`.
 
